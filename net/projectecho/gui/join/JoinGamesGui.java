@@ -61,7 +61,7 @@ public class JoinGamesGui extends GuiScreen {
 
     private void renderBackground() {
         RenderingUtils.drawBorderCorneredRectangle(x, y, x + width, y + height, 1, Color.TRANSLUCENT, -1);
-        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height);
+        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height, 0);
     }
 
     @Override

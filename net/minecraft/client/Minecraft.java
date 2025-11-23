@@ -374,7 +374,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         logger.info("(Session ID is " + this.session.getSessionID() + ")");
         this.isDemo = gameConfig.gameInfo.isDemo;
         this.displayWidth = gameConfig.displayInfo.width > 0 ? gameConfig.displayInfo.width : 1;
-        this.displayWidth = gameConfig.displayInfo.width > 0 ? gameConfig.displayInfo.width : 1;
         this.displayHeight = gameConfig.displayInfo.height > 0 ? gameConfig.displayInfo.height : 1;
         this.tempDisplayWidth = gameConfig.displayInfo.width;
         this.tempDisplayHeight = gameConfig.displayInfo.height;
@@ -610,7 +609,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         try
         {
-            Display.create((new PixelFormat()).withDepthBits(24));
+            Display.create(new PixelFormat().withSamples(4).withDepthBits(24));
         }
         catch (LWJGLException lwjglexception)
         {

@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.projectecho.gui.blur.impl.BlurShader;
 import net.projectecho.gui.blur.impl.KawaseBlur;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import java.awt.*;
 
@@ -48,10 +49,89 @@ public class RenderingUtils {
         GL11.glHint(3155, 4352);
     }
 
+    public static void drawRoundedRect(float x, float y, float x2, float y2, float radius, int color) {
+        if (x > x2) { float t = x; x = x2; x2 = t; }
+        if (y > y2) { float t = y; y = y2; y2 = t; }
+
+        float width = x2 - x;
+        float height = y2 - y;
+        if (width <= 0 || height <= 0) return;
+
+        enableGL();
+        glColor(color);
+
+        // Center
+        drawQuad(x + radius, y + radius, x2 - radius, y2 - radius);
+
+        // Top
+        drawQuad(x + radius, y, x2 - radius, y + radius);
+
+        // Bottom
+        drawQuad(x + radius, y2 - radius, x2 - radius, y2);
+
+        // Left
+        drawQuad(x, y + radius, x + radius, y2 - radius);
+
+        // Right
+        drawQuad(x2 - radius, y + radius, x2, y2 - radius);
+
+        int segments = Math.max(16, (int)(radius * 3f)); // smoother corners
+
+        // Corners
+        drawArc(x + radius,     y + radius,     radius, 180, 270, segments); // top-left
+        drawArc(x2 - radius,    y + radius,     radius, 270, 360, segments); // top-right
+        drawArc(x2 - radius,    y2 - radius,    radius,   0,  90, segments); // bottom-right
+        drawArc(x + radius,     y2 - radius,    radius,  90, 180, segments); // bottom-left
+        glColor(color);
+        disableGL();
+    }
+
+    private static void drawArc(float cx, float cy, float r, float startDeg, float endDeg, int segments) {
+        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+
+        GL11.glVertex2f(cx, cy);
+
+        for (int i = 0; i <= segments; i++) {
+            double angle = Math.toRadians(startDeg + (i * (endDeg - startDeg) / segments));
+            GL11.glVertex2f((float) (cx + Math.cos(angle) * r), (float) (cy + Math.sin(angle) * r));
+        }
+
+        GL11.glEnd();
+    }
+
+    private static void drawQuad(float x1, float y1, float x2, float y2) {
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glVertex2f(x1, y1);
+        GL11.glVertex2f(x2, y1);
+        GL11.glVertex2f(x2, y2);
+        GL11.glVertex2f(x1, y2);
+        GL11.glEnd();
+    }
+
+    private static void enableGL() {
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glEnable(GL13.GL_MULTISAMPLE);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private static void disableGL() {
+        GL11.glDisable(GL13.GL_SAMPLE_ALPHA_TO_COVERAGE);
+        GL11.glDisable(GL13.GL_MULTISAMPLE);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glPopAttrib();
+        GL11.glPopMatrix();
+    }
+
     public static void drawBorderedRectangle(float startX, float startY, float endX, float endY, float width, int color, int borderColor) {
-       drawRectangle(startX, startY, endX, endY, color);
-       drawRectangle(startX + 0.5f - width, startY, startX + 0.5f, endY, borderColor);
-       drawRectangle(startX + 0.5f - width, startY + 0.5f - width, endX - 0.5f + width, startY + 0.5f, borderColor);
+        drawRectangle(startX, startY, endX, endY, color);
+        drawRectangle(startX + 0.5f - width, startY, startX + 0.5f, endY, borderColor);
+        drawRectangle(startX + 0.5f - width, startY + 0.5f - width, endX - 0.5f + width, startY + 0.5f, borderColor);
         drawRectangle(endX - 0.5f, startY, endX - 0.5f + width, endY, borderColor);
         drawRectangle(startX + 0.5f - width, endY - 0.5f, endX - 0.5f + width, endY - 0.5f + width, borderColor);
     }
@@ -70,14 +150,14 @@ public class RenderingUtils {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
         Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
-        float f = 1.0F / (float)width;
-        float f1 = 1.0F / (float)height;
+        float f = 1.0F / (float) width;
+        float f1 = 1.0F / (float) height;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(posX, posY + height, 0.0D).tex(0.0F * f, (0.0F + (float)height) * f1).endVertex();
-        worldrenderer.pos(posX + width, posY + height, 0.0D).tex((0.0F + (float)width) * f, (0.0F + (float)height) * f1).endVertex();
-        worldrenderer.pos(posX + width, posY, 0.0D).tex((0.0F + (float)width) * f, 0.0F * f1).endVertex();
+        worldrenderer.pos(posX, posY + height, 0.0D).tex(0.0F * f, (0.0F + (float) height) * f1).endVertex();
+        worldrenderer.pos(posX + width, posY + height, 0.0D).tex((0.0F + (float) width) * f, (0.0F + (float) height) * f1).endVertex();
+        worldrenderer.pos(posX + width, posY, 0.0D).tex((0.0F + (float) width) * f, 0.0F * f1).endVertex();
         worldrenderer.pos(posX, posY, 0.0D).tex(0.0F * f, 0.0F * f1).endVertex();
         tessellator.draw();
         GlStateManager.popMatrix();
@@ -89,7 +169,7 @@ public class RenderingUtils {
         return Color.getHSBColor((float) (rainbowState / 270.0), 0.4f, 1f);
     }
 
-    public static double progressiveAnimation( double now,  double desired,  double speed) {
+    public static double progressiveAnimation(double now, double desired, double speed) {
         double dif = Math.abs(now - desired);
         int fps = Minecraft.getDebugFPS();
         if (dif > 0.0) {
@@ -132,7 +212,7 @@ public class RenderingUtils {
     }
 
     public static void scale(float x, float y, float scale) {
-        Gui.drawRect(0,0,0,0,0);
+        Gui.drawRect(0, 0, 0, 0, 0);
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, 0);
         GlStateManager.scale(scale, scale, 1);
@@ -158,19 +238,23 @@ public class RenderingUtils {
     }
 
     public static void glColor(int color) {
-        var red = (color >> 16 & 0xFF) / 255.0f;
-        var green = (color >> 8 & 0xFF) / 255.0f;
-        var blue = (color & 0xFF) / 255.0f;
-        var alpha = (color >> 24 & 0xFF) / 255.0f;
+        float alpha = ((color >> 24) & 0xFF) / 255f;
+        float red = ((color >> 16) & 0xFF) / 255f;
+        float green = ((color >> 8) & 0xFF) / 255f;
+        float blue = ((color) & 0xFF) / 255f;
+
         GL11.glColor4f(red, green, blue, alpha);
     }
 
-    public static void drawBlurredRect(BlurType type, double x, double y, double x1, double y1) {
+    public static void drawBlurredRect(BlurType type, double x, double y, double x1, double y1, float radius) {
         switch (type) {
             case KAWASE:
                 StencilUtility.initStencilToWrite();
                 enableGL2D();
-                Gui.drawRect(x, y, x1, y1, -1);
+                if (radius > 0)
+                    drawRoundedRect((float) x, (float) y, (float) x1, (float) y1, radius, -1);
+                else
+                    Gui.drawRect(x, y, x1, y1, -1);
                 disableGL2D();
                 StencilUtility.readStencilBuffer(1);
                 KawaseBlur.renderBlur(1, 8);
@@ -179,7 +263,7 @@ public class RenderingUtils {
             case NORMAL:
                 StencilUtility.initStencilToWrite();
                 enableGL2D();
-                Gui.drawRect(x, y, x1, y1, new Color(0,0,0,30).getRGB());
+                drawRoundedRect((float) x, (float) y, (float) x1, (float) y1, radius, -1);
                 disableGL2D();
                 StencilUtility.readStencilBuffer(1);
                 BlurShader.renderBlur(6);

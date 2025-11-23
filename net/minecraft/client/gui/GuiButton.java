@@ -91,8 +91,8 @@ public class GuiButton extends Gui
             slide = RenderingUtils.progressiveAnimation(slide, hovered ? width : 0, 0.6);
             RenderingUtils.drawRectangle(this.xPosition, this.yPosition, this.xPosition + width, this.yPosition + height, new Color(0, 0, 0, 50).getRGB());
             RenderingUtils.drawRectangle((float) this.xPosition, (float) this.yPosition, (float) (this.xPosition + slide), this.yPosition + height, Echo.INSTANCE.getClientColor());
-            RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, this.xPosition, this.yPosition, this.xPosition + width, this.yPosition + height);
-            FontManager.getMedFont(16).drawCenteredString(this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 6) / 2, -1);
+            RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, this.xPosition, this.yPosition, this.xPosition + width, this.yPosition + height, 0);
+            FontManager.getMedFont(16).drawCenteredString(this.displayString, this.xPosition + (float) this.width / 2, this.yPosition + (float) (this.height - 6) / 2, -1);
         }
     }
 

@@ -1781,7 +1781,7 @@ public class Config
                 try
                 {
                     Display.setDisplayMode(displaymode);
-                    Display.create((new PixelFormat()).withDepthBits(24));
+                    Display.create((new PixelFormat()).withDepthBits(24).withSamples(i));
                     Display.setResizable(false);
                     Display.setResizable(true);
                 }

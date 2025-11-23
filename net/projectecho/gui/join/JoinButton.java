@@ -32,8 +32,8 @@ public class JoinButton extends Component {
         var font = FontManager.getFont(25);
         RenderingUtils.drawBorderedRectangle((float) x, (float) y, (float) (x + width), (float) (y + height), hovered ? 1.5f : 1,
                 new Color(25, 25, 25, 25).getRGB(), new Color(255, 255, 255, 120).getRGB());
-        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height);
-        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height);
+        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height, 0);
+        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height, 0);
         font.drawCenteredStringWithShadow(text, (int) (x + width / 2), (int) this.y + 20, Echo.INSTANCE.getClientColor());
     }
 
