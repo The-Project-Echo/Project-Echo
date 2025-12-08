@@ -70,8 +70,7 @@ public class ToggleButton extends Component {
                 (x + width) - 17), (float) ((y + height) - 5) - parent.scroll, 6);
         var hoverY = (y + 4);
         addon.hovered = isHovered(mouseX, mouseY, (float) ((x + width) - 36), (float) hoverY - parent.scroll, 32F,
-                (float) height - 4 - parent.scroll);
-        // TODO fix the god damn hover shit not working when i scroll, its 5:24 AM and i just want to sleep
+                (float) height - 4);
         //        int off = 12;
 //        if (!cust)
 //            createAddonCheckbox(mouseX, mouseY, addon, (int) (x + 4), (int) ((y + offset)), 6, 6);

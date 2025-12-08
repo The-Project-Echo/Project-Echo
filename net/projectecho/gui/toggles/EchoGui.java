@@ -44,13 +44,12 @@ public class EchoGui extends GuiScreen {
         renderBackground();
         RenderingUtils.destroyCropBox();
 
+        RenderingUtils.makeCropBox(x, y + 27, x + 132, y + 200);
         for (ToggleButton addon : addons) {
-            RenderingUtils.makeCropBox(x, y + 27, x + 132, (float) scaledResolution.getScaledHeight() / 2 + (height / 2));
-            var hovered = isHovered(mouseX, mouseY, (float) addon.x, (float) addon.y, (float) addon.width, (float) addon.height);
             addon.color = -1;
-            addon.drawComponent(mouseX, mouseY, hovered);
-            RenderingUtils.destroyCropBox();
+            addon.drawComponent(mouseX, mouseY, addon.addon.hovered);
         }
+        RenderingUtils.destroyCropBox();
     }
 
     @Override
@@ -101,7 +100,7 @@ public class EchoGui extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for (ToggleButton addon : addons)
-            if (isHovered(mouseX, mouseY, (float) addon.x, (float) addon.y, (float) addon.width, (float) addon.height))
+            if (addon.addon.hovered)
                 addon.onPressed(mouseButton);
     }
 
