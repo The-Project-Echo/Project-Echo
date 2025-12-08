@@ -71,15 +71,15 @@ public class ToggleButton extends Component {
         var hoverY = (y + 4);
         addon.hovered = isHovered(mouseX, mouseY, (float) ((x + width) - 36), (float) hoverY - parent.scroll, 32F,
                 (float) height - 4);
-        //        int off = 12;
+                int off = 12;
 //        if (!cust)
 //            createAddonCheckbox(mouseX, mouseY, addon, (int) (x + 4), (int) ((y + offset)), 6, 6);
 //        else
 //            addon.hovered = isHovered(mouseX, mouseY, (float) x, (float) y, (float) width, (float) height);
-//        for (Option option : options) {
-//            createCheckbox(mouseX, mouseY, option, (int) (x + 4), (int) ((y + offset) + off), 6, 6);
-//            off += 12;
-//        }
+        for (Option option : options) {
+            createCheckbox(mouseX, mouseY, option, (int) (parent.x + 140), (int) ((parent.y + 20) + off), 6, 6);
+            off += 12;
+        }
     }
 
     public void createCheckbox(int mouseX, int mouseY, Option option, int x, int y, int width, int height){
