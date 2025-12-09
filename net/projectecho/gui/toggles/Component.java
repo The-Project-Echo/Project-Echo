@@ -15,7 +15,7 @@ public class Component {
         this.color = color;
     }
 
-    public void onPressed(int key){
+    public void onPressed(int mouseX, int mouseY, int key){
     }
 
     public void onRightClick(int key){

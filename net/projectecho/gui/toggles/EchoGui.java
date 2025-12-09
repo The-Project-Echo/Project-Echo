@@ -1,5 +1,6 @@
 package net.projectecho.gui.toggles;
 
+import lombok.val;
 import lombok.var;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -7,6 +8,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.Render;
 import net.projectecho.Echo;
+import net.projectecho.addon.api.Addon;
 import net.projectecho.addon.impl.BedwarsHud;
 import net.projectecho.addon.impl.InfoHud;
 import net.projectecho.gui.toggles.button.ToggleButton;
@@ -27,11 +29,13 @@ public class EchoGui extends GuiScreen {
 
     ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
     public List<ToggleButton> addons = new ArrayList<>();
+    public Addon currentAddon;
     public float x, y, width, height, sliding, scroll, lastScroll, scrollTarget = 0, scrollHeight = 28, visibleItems = 6, totalItems = 10, maxScroll, scrollAccumulator = 0;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
+        var font = FontManager.getMedFont(22);
         width = (float) RenderingUtils.progressiveAnimation(width, 300, 0.6);
         height = (float) RenderingUtils.progressiveAnimation(height, 200, 0.6);
 
@@ -47,11 +51,16 @@ public class EchoGui extends GuiScreen {
             addon.color = -1;
             addon.drawComponent(mouseX, mouseY, addon.addon.hovered);
         }
+        font.drawStringWithShadow("Options for", x + 140,
+                y + 30, new Color(145, 145, 165).getRGB());
+        font.drawStringWithShadow(currentAddon.getDisplayName(), x + 141 + font.getWidth("Options for"),
+                y + 30, Echo.INSTANCE.getClientColor());
         RenderingUtils.destroyCropBox();
     }
 
     @Override
     public void initGui() {
+        currentAddon = Echo.INSTANCE.getAddonManager().getAddon("bw");
         x = (float) scaledResolution.getScaledWidth() / 2 - 150;
         y = (float) scaledResolution.getScaledHeight() / 2 - 100;
         maxScroll = Math.max(0, (totalItems * scrollHeight) - (visibleItems * scrollHeight));
@@ -97,9 +106,15 @@ public class EchoGui extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        for (ToggleButton addon : addons)
+        for (ToggleButton addon : addons) {
             if (addon.addon.hovered)
-                addon.onPressed(mouseButton);
+                addon.onPressed(mouseX, mouseY, mouseButton);
+            if (addon.addon == currentAddon)
+                for (val option : addon.options) {
+                    if (option.hovered)
+                        option.setVal(!option.isVal());
+                }
+        }
     }
 
     private void renderBackground() {
