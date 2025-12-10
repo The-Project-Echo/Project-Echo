@@ -46,7 +46,9 @@ public class EchoGui extends GuiScreen {
 
         RenderingUtils.makeCropBox(x, y, (float) scaledResolution.getScaledWidth() / 2 + (width / 2), (float) scaledResolution.getScaledHeight() / 2 + (height / 2));
         renderBackground();
-        
+        RenderingUtils.destroyCropBox();
+
+        RenderingUtils.makeCropBox(x, y + 27, (float) scaledResolution.getScaledWidth() / 2 + (width / 2), (float) scaledResolution.getScaledHeight() / 2 + (height / 2));
         for (ToggleButton addon : addons) {
             addon.color = -1;
             addon.drawComponent(mouseX, mouseY, addon.addon.hovered);

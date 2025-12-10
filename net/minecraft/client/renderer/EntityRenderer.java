@@ -591,8 +591,9 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
     private float zoomFovMultiplier = 1.0F;
     private float zoomScrollLevel = 0.15F;
-    private final float minZoom = 0.05F;
-    private final float maxZoom = 0.5F;
+    private float zoomStartValue = 1.0F;
+    private float zoomEndValue = 1.0F;
+    private long zoomStartTime = 0;
 
     private float getFOVModifier(float partialTicks, boolean useFovSetting)
     {
@@ -646,14 +647,32 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 {
                     zoomScrollLevel += scrollStep;
                 }
+                float minZoom = 0.05F;
+                float maxZoom = 0.5F;
                 zoomScrollLevel = MathHelper.clamp_float(zoomScrollLevel, minZoom, maxZoom);
             }
         }
 
-        // Smooth interpolation
         float targetMultiplier = zoomKeyHeld ? zoomScrollLevel : 1.0F;
-        float zoomSpeed = 0.0022F;
-        zoomFovMultiplier += (targetMultiplier - zoomFovMultiplier) * zoomSpeed;
+
+        if (targetMultiplier != zoomEndValue)
+        {
+            zoomStartValue = zoomFovMultiplier;
+            zoomEndValue = targetMultiplier;
+            zoomStartTime = System.currentTimeMillis();
+        }
+
+        long now = System.currentTimeMillis();
+        long zoomDuration = 250;
+        float t = (now - zoomStartTime) / (float) zoomDuration;
+
+        if (t >= 1.0F)
+            zoomFovMultiplier = zoomEndValue;
+        else
+        {
+            float smooth = t * t * (3 - 2 * t);
+            zoomFovMultiplier = zoomStartValue + (zoomEndValue - zoomStartValue) * smooth;
+        }
 
         // Reset zoom level on unhold
         if (zoomKeyHeld)

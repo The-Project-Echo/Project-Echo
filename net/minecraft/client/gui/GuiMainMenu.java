@@ -187,17 +187,17 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
 
-        if (calendar.get(2) + 1 == 12 && calendar.get(5) == 24)
+        if (calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DATE) == 24)
         {
             this.splashText = "Merry X-mas!";
         }
-        else if (calendar.get(2) + 1 == 1 && calendar.get(5) == 1)
+        else if (calendar.get(Calendar.MONTH) + 1 == 1 && calendar.get(Calendar.DATE) == 1)
         {
             this.splashText = "Happy new year!";
         }
-        else if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31)
+        else if (calendar.get(Calendar.MONTH) + 1 == 10 && calendar.get(Calendar.DATE) == 31)
         {
-            this.splashText = "OOoooOOOoooo! Spooky!";
+            this.splashText = "OOoooOOOoooo! Spookayyyy!";
         }
 
         int i = 24;
@@ -236,7 +236,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
     {
         this.buttonList.add(new GuiButton(1, this.width / 2 - 101, (int) (yPosition + 250), 100, 20, "Play Offline"));
         this.buttonList.add(new GuiButton(2, this.width / 2 + 1, (int) (yPosition + 250), 100, 20, "Play Online"));
-        this.buttonList.add(new GuiButton(14, this.width / 2 - 101, (int) (yPosition + 272), 202, 20, "MSAuth to be added..."));
+        this.buttonList.add(new GuiButton(3, this.width / 2 - 101, (int) (yPosition + 272), 202, 20, "MSAuth to be added..."));
     }
 
     /**
@@ -244,8 +244,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
      */
     private void addDemoButtons(int p_73972_1_, int p_73972_2_)
     {
-        this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo", new Object[0])));
-        this.buttonList.add(this.buttonResetDemo = new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo", new Object[0])));
+        this.buttonList.add(new GuiButton(5, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo", new Object[0])));
+        this.buttonList.add(this.buttonResetDemo = new GuiButton(6, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo", new Object[0])));
         ISaveFormat isaveformat = this.mc.getSaveLoader();
         WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
@@ -260,51 +260,34 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
      */
     protected void actionPerformed(GuiButton button) throws IOException
     {
-        if (button.id == 0)
-        {
-            this.mc.displayGuiScreen(new GuiOptions(this, this.mc.gameSettings));
-        }
+        switch (button.id) {
+            case 0:
+                this.mc.displayGuiScreen(new GuiOptions(this, this.mc.gameSettings));
+                break;
+            case 1:
+                this.mc.displayGuiScreen(new GuiSelectWorld(this));
+                break;
+            case 2:
+                this.mc.displayGuiScreen(new GuiMultiplayer(this));
+                break;
+            case 3:
+                // TODO: add ms auth
+                break;
+            case 4:
+                this.mc.shutdown();
+                break;
+            case 5:
+                this.mc.launchIntegratedServer("Demo_World", "Demo_World", DemoWorldServer.demoWorldSettings);
+                break;
+            case 6:
+                ISaveFormat isaveformat = this.mc.getSaveLoader();
+                WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
-        if (button.id == 5)
-        {
-            this.mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
-        }
-
-        if (button.id == 1)
-        {
-            this.mc.displayGuiScreen(new GuiSelectWorld(this));
-        }
-
-        if (button.id == 2)
-        {
-            this.mc.displayGuiScreen(new GuiMultiplayer(this));
-        }
-
-        if (button.id == 14 && this.realmsButton.visible)
-        {
-            this.switchToRealms();
-        }
-
-        if (button.id == 4)
-        {
-            this.mc.shutdown();
-        }
-
-        if (button.id == 11)
-        {
-            this.mc.launchIntegratedServer("Demo_World", "Demo_World", DemoWorldServer.demoWorldSettings);
-        }
-
-        if (button.id == 12)
-        {
-            ISaveFormat isaveformat = this.mc.getSaveLoader();
-            WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
-
-            if (worldinfo != null)
-            {
-                GuiYesNo guiyesno = GuiSelectWorld.func_152129_a(this, worldinfo.getWorldName(), 12);
-                this.mc.displayGuiScreen(guiyesno);
-            }
+                if (worldinfo != null) {
+                    GuiYesNo guiyesno = GuiSelectWorld.func_152129_a(this, worldinfo.getWorldName(), 12);
+                    this.mc.displayGuiScreen(guiyesno);
+                }
+                break;
         }
     }
 

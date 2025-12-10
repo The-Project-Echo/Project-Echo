@@ -44,12 +44,6 @@ public class ToggleButton extends Component {
 
     @Override
     public void onPressed(int mouseX, int mouseY, int key) {
-//        if (addon == parent.currentAddon)
-//            for (Option option : options) {
-//                if (option.hovered) {
-//                    option.setVal(!option.isVal());
-//                }
-//            }
         if (addon.hovered)
             if (key == 0)
                 addon.setState(!addon.isState());
@@ -57,17 +51,13 @@ public class ToggleButton extends Component {
             parent.currentAddon = addon;
     }
 
-    public void updateOptionHoverState(int mouseX, int mouseY, Option option) {
-//        option.hovered = isHovered(mouseX, mouseY, parent.x + 140, (parent.y + 20) + off, 6, 6);
-//        if (option.hovered)
-//            Minecraft.getMinecraft().thePlayer.sendChatMessage(option.getDisplay());
-    }
-
     @Override
     public void drawComponent(int mouseX, int mouseY, boolean hovered) {
         var font = FontManager.getMedFont(22);
-        RenderingUtils.drawRoundedRect((float) x, (float) y - parent.scroll, (float) (x + width), (float) (y + height) - parent.scroll, 8, new Color(10, 10, 15, 170).getRGB());
-        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, (float) x, (float) y - parent.scroll, (float) (x + width), (float) (y + height) - parent.scroll, 8);
+        RenderingUtils.drawRoundedRect((float) x, (float) y - parent.scroll, (float) (x + width), (float) (y + height) - parent.scroll,
+                8, new Color(10, 10, 15, 170).getRGB());
+        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, (float) x, (float) y - parent.scroll, (float) (x + width),
+                (float) (y + height) - parent.scroll, 8);
         font.drawStringWithShadow(addon.getDisplayName(), (float) (x + 8), (float) (y + 7) - parent.scroll,
                 addon.isState() ? Echo.INSTANCE.getClientColor() : new Color(145, 145, 165).getRGB());
 
@@ -79,8 +69,8 @@ public class ToggleButton extends Component {
         var state = addon.isState();
         RenderingUtils.drawRoundedRect((float) (state ? (x + width) - 17 : (x + width) - 35), (float) (y + 5) - parent.scroll, (float) (state ? (x + width) - 5 :
                 (x + width) - 17), (float) ((y + height) - 5) - parent.scroll, 6, new Color(state ? 0 : 250, state ? 250 : 0, 0, 115).getRGB());
-        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, (float) (state ? (x + width) - 17 : (x + width) - 35), (float) (y + 5) - parent.scroll, (float) (state ? (x + width) - 5 :
-                (x + width) - 17), (float) ((y + height) - 5) - parent.scroll, 6);
+        RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, (float) (state ? (x + width) - 17 : (x + width) - 35), (float) (y + 5) - parent.scroll,
+                (float) (state ? (x + width) - 5 : (x + width) - 17), (float) ((y + height) - 5) - parent.scroll, 6);
         var hoverY = (y + 4);
         addon.hovered = isHovered(mouseX, mouseY, (float) ((x + width) - 36), (float) hoverY - parent.scroll, 32F,
                 (float) height - 4);
@@ -92,27 +82,16 @@ public class ToggleButton extends Component {
     }
 
     public void createCheckboxes(int mouseX, int mouseY, CustomFontRenderer font, Option option, int x, int y, int width, int height) {
-            if (parent.currentAddon == addon) {
-                option.hovered = isHovered(mouseX, mouseY, x, y, width, height);
-                font.drawStringWithShadow(option.display, x + 22, y + 2, -1);
-                RenderingUtils.drawRoundedRect(x, y - 2, x + 18, y + 16, 8
-                        , new Color(0, 0, 0, 100).getRGB());
-                RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y - 2, x + 18, y + 16, 8);
-                RenderingUtils.drawRoundedRect(x + 2, y, x + 16, y + 14, 7
-                        , new Color(option.val ? 0 : 255, option.val ? 255 : 0, 0, 100).getRGB());
-                RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x + 2, y, x + 16, y + 14, 7);
+        if (parent.currentAddon == addon) {
+            option.hovered = isHovered(mouseX, mouseY, x, y, width, height);
+            font.drawStringWithShadow(option.display, x + 22, y + 2, option.isVal() ? Echo.INSTANCE.getClientColor() : new Color(145, 145, 165).getRGB());
+            RenderingUtils.drawRoundedRect(x, y - 2, x + 18, y + 16, 8
+                    , new Color(0, 0, 0, 100).getRGB());
+            RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y - 2, x + 18, y + 16, 8);
+            RenderingUtils.drawRoundedRect(x + 2, y, x + 16, y + 14, 7
+                    , new Color(option.val ? 0 : 255, option.val ? 255 : 0, 0, 100).getRGB());
+            RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x + 2, y, x + 16, y + 14, 7);
         }
-    }
-
-    public void createAddonCheckbox(int mouseX, int mouseY, Addon addon, int x, int y, int width, int height) {
-        if (addon.isState()) {
-            RenderingUtils.drawRectangle(x, y, x + width, y + height, Echo.INSTANCE.getClientColor());
-            RenderingUtils.drawRectangle(x, y, x + width, y + height, Echo.INSTANCE.getClientColor());
-            RenderingUtils.drawBlurredRect(RenderingUtils.BlurType.NORMAL, x, y, x + width, y + height, 8);
-        }
-        RenderingUtils.drawBorderedRectangle(x, y, x + width, y + height, 1, Color.TRANSLUCENT, -1);
-        FontManager.getFont(18).drawStringWithShadow("Enabled", x + 9, y - 1, -1);
-        addon.hovered = isHovered(mouseX, mouseY, x, y, width, height);
     }
 
     public boolean isHovered(int mouseX, int mouseY, float x, float y, float width, float height) {
