@@ -79,8 +79,8 @@ public class BedwarsHud extends Addon {
                 new ItemInfo(emeraldOpt.val, String.valueOf(emerald), "textures/items/emerald.png", 21, 258, 2, 254),
                 new ItemInfo(ArrowOpt.val, String.valueOf(arrow), "textures/items/arrow.png", 21, 275, 2, 269));
 
-       var text_offset = 210;
-       var image_offset = 205;
+        var text_offset = 210;
+        var image_offset = 205;
         // Iterate over the list and render each item
         for (ItemInfo item : items) {
             if (item.option) {
@@ -97,6 +97,7 @@ public class BedwarsHud extends Addon {
         int xText, yText, xImg, yImg;
         String text, imagePath;
         boolean option;
+
         ItemInfo(boolean option, String text, String imagePath, int xText, int yText, int xImg, int yImg) {
             this.option = option;
             this.text = text;
