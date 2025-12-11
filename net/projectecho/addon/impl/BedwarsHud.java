@@ -1,5 +1,6 @@
 package net.projectecho.addon.impl;
 
+import lombok.var;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,16 +33,23 @@ public class BedwarsHud extends Addon {
                 if (stack != null) {
                     Item item = stack.getItem();
                     int stackSize = stack.stackSize;
-                    if (item == Items.iron_ingot) {
-                        iron += stackSize;
-                    } else if (item == Items.gold_ingot) {
-                        gold += stackSize;
-                    } else if (item == Items.diamond) {
-                        diamond += stackSize;
-                    } else if (item == Items.emerald) {
-                        emerald += stackSize;
-                    } else if (item == Items.arrow) {
-                        arrow += stackSize;
+
+                    switch (item.getUnlocalizedName()) {
+                        case "item.ingotIron":
+                            iron += stackSize;
+                            break;
+                        case "item.ingotGold":
+                            gold += stackSize;
+                            break;
+                        case "item.diamond":
+                            diamond += stackSize;
+                            break;
+                        case "item.emerald":
+                            emerald += stackSize;
+                            break;
+                        case "item.arrow":
+                            arrow += stackSize;
+                            break;
                     }
                 }
             }
@@ -63,17 +71,23 @@ public class BedwarsHud extends Addon {
 
     public void drawBedwarsOverlay() {
         // List of items to render
+
         List<ItemInfo> items = Arrays.asList(
-                new ItemInfo(ironOpt.val, String.valueOf(iron), "textures/items/iron_ingot.png", 19, 209, 2, 205),
-                new ItemInfo(goldOpt.val, String.valueOf(gold), "textures/items/gold_ingot.png", 19, 224, 2, 220),
-                new ItemInfo(diamondOpt.val, String.valueOf(diamond), "textures/items/diamond.png", 19, 241, 2, 235),
-                new ItemInfo(emeraldOpt.val, String.valueOf(emerald), "textures/items/emerald.png", 19, 258, 2, 254),
-                new ItemInfo(ArrowOpt.val, String.valueOf(arrow), "textures/items/arrow.png", 19, 275, 2, 269));
+                new ItemInfo(ironOpt.val, String.valueOf(iron), "textures/items/iron_ingot.png", 21, 209, 2, 205),
+                new ItemInfo(goldOpt.val, String.valueOf(gold), "textures/items/gold_ingot.png", 21, 224, 2, 220),
+                new ItemInfo(diamondOpt.val, String.valueOf(diamond), "textures/items/diamond.png", 21, 241, 2, 235),
+                new ItemInfo(emeraldOpt.val, String.valueOf(emerald), "textures/items/emerald.png", 21, 258, 2, 254),
+                new ItemInfo(ArrowOpt.val, String.valueOf(arrow), "textures/items/arrow.png", 21, 275, 2, 269));
+
+       var text_offset = 210;
+       var image_offset = 205;
         // Iterate over the list and render each item
         for (ItemInfo item : items) {
             if (item.option) {
-                FontManager.getFont(14).drawStringWithShadow(item.text, item.xText, item.yText, -1);
-                RenderingUtils.drawImg(new ResourceLocation(item.imagePath), item.xImg, item.yImg, 16, 16);
+                FontManager.getFont(14).drawStringWithShadow(item.text, item.xText, text_offset, -1);
+                RenderingUtils.drawImg(new ResourceLocation(item.imagePath), item.xImg, image_offset, 16, 16);
+                text_offset += 19;
+                image_offset += 19;
             }
         }
     }
